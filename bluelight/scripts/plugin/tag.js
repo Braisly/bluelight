@@ -65,7 +65,9 @@ window.addEventListener("load", function (event) {
 
         set_TAG_context(index);
 
-        if (ConfigLog.Xml2Dcm.enableXml2Dcm == true) {
+
+        console.log("ConfigLog: " + ConfigLog + " " + ConfigLog.Xml2Dcm);
+        if (ConfigLog.Xml2Dcm !== undefined && enableXml2Dcm == true) {
             download2(String(get_TAG_context()), "" + CreateRandom(), 'text/plain');
         } else {
             download(String(get_TAG_context()), sopUID + ".xml", 'text/plain');
