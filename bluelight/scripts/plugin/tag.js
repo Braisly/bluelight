@@ -135,7 +135,7 @@ getByid("writeTAG").onclick = function () {
 
     set_TAG_context(index);
 
-    if (ConfigLog.Xml2Dcm.enableXml2Dcm == true) {
+    if (ConfigLog.Xml2Dcm !== undefined && ConfigLog.Xml2Dcm.enableXml2Dcm === true) {
         download2(String(get_TAG_context()), "" + CreateRandom(), 'text/plain');
     } else {
         download(String(get_TAG_context()), sopUID + ".xml", 'text/plain');

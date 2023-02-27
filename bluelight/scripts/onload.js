@@ -3,8 +3,52 @@ window.onload = function () {
   EnterRWD();
   //初始化參數
   loadLdcmview();
+
+  readXNATRequest();
+
   //初始化HTML元素事件
   html_onload();
+}
+
+function getQueryVariable(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == variable) {
+      return pair[1];
+    }
+  }
+  return (false);
+}
+
+function readXNATRequest() {
+  var experiments = (getQueryVariable('experiments'));
+  var scans = (getQueryVariable('scans'));
+  var format = (getQueryVariable('format'));
+  if (experiments != false && scans != false && format != false) {
+    var url = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/data/experiments/"
+        + experiments + "/scans/" + scans + "/files/" + "?format=json";
+    readJson2(url);
+  }
+}
+
+function readJson2(url) {
+  var requestURL = url;
+  var request = new XMLHttpRequest();
+  request.open('GET', requestURL);
+  request.responseType = 'json';
+  request.send();
+  request.onload = function () {
+    var superHeroes = request.response;
+    for (var i = 0; i < superHeroes["ResultSet"]["Result"].length; i++) {
+      if (superHeroes["ResultSet"]["Result"][i]["file_format"] == "DICOM") {
+        var uri = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + superHeroes["ResultSet"]["Result"][i]["URI"];
+        url = "wadouri:" + uri;
+        series = virtualLoadImage(url, 0);  // launch viewer, should be refined.
+      }
+    }
+  }
 }
 
 function loadLdcmview() {
@@ -231,7 +275,7 @@ function loadLdcmview() {
 
   //載入config檔的設定
   readDicomTags("../data/dicomTags.json");
-  readConfigJson("../data/config.json", readAllJson, readJson);
+  //readConfigJson("../data/config.json", readAllJson, readJson);
 
   //設定icon邊框
   drawBorder(getByid("MouseOperation"));
